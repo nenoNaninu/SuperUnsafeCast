@@ -11,7 +11,7 @@ namespace SuperUnsafeCast
             intArray[0] = 1;
             intArray[1] = 2;
             intArray[2] = 4;
-            intArray[4] = 0xffffffff;
+            intArray[4] = 0xfffffff0;
             byte[] byteArray = Unsafe.As<uint[], byte[]>(ref intArray);
 
             Console.WriteLine($"byteArray.Length is {byteArray.Length}");
@@ -29,6 +29,17 @@ namespace SuperUnsafeCast
                 Console.WriteLine(b);
             }
 
+            var b3 = new byte[20];
+
+            Buffer.BlockCopy(intArray, 0, b3, 0, 20);
+
+            Console.WriteLine("---");
+
+            foreach (var b in b3)
+            {
+                Console.WriteLine(b);
+            }
+
         }
 
         private static unsafe byte[] Cast(uint[] array)
@@ -39,6 +50,7 @@ namespace SuperUnsafeCast
             {
                 *ptr = 15;
                 long* lengthHeader = (long*)(ptr - 8);
+                //*lengthHeader = -1;
                 *lengthHeader = array.Length * sizeof(uint);
             }
 
